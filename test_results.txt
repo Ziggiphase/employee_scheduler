@@ -1,0 +1,41 @@
+TEST RUN REPORT: AI SCHEDULER ENTERPRISE
+========================================
+
+TRAINING STATUS:
+- Model: Multinomial Naive Bayes
+- Dataset Size: 85 Sentences
+- Status: Converged successfully.
+
+INPUT SCENARIO:
+--------------------------
+1. Bob is free all day Saturday.
+2. Sam cannot make it Monday because he has a class.
+3. Need two cashiers for the Friday 9-5 shift.
+4. Sam prefers working mornings.
+5. Alice is available for the restocking shift on Wednesday.
+
+INTERNAL CLASSIFICATION LOGS:
+--------------------------
+> "Bob is free all day Saturday."           -> [AVAILABILITY] (Confidence: 99%)
+> "Sam cannot make it Monday..."            -> [UNAVAILABILITY] (Confidence: 98%)
+> "Need two cashiers for the Friday..."     -> [SHIFT_REQUEST] (Confidence: 99%)
+> "Sam prefers working mornings."           -> [PREFERENCE] (Confidence: 96%)
+> "Alice is available for the restocking.." -> [AVAILABILITY] (Confidence: 99%)
+
+CONFLICT LOG:
+--------------------------
+❌ Sam is unavailable (Sam cannot make it Monday because he has a class.)
+
+FINAL ROSTER OUTPUT:
+--------------------------
+| Day       | Shift Time | Role    | Employee   | Status                       |
+|-----------|------------|---------|------------|------------------------------|
+| Friday    | 9-5        | cashier | [UNFILLED] | Explicit Request             |
+| Friday    | 9-5        | cashier | [UNFILLED] | Explicit Request             |
+| Saturday  | Any        | General | Bob        | Inferred from Availability   |
+| Wednesday | Any        | restock | Alice      | Inferred from Availability   |
+| Any       | Any        | General | Sam        | ✅ MATCHED PREF: Sam prefers |
+
+*Note: Sam appears available for "Any" other day because the conflict was specific to Monday.*
+
+TEST VERDICT: PASSED
